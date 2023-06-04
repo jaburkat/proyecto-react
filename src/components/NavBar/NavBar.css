@@ -1,0 +1,32 @@
+.logo {
+  font-size: 1.9rem;
+  color: #ecde1c !important;
+  font-weight: 900;
+  transition: transform 1s;
+}
+
+.logo:hover {
+  transform: scale(1.2);
+}
+
+.nav-link {
+  font-weight: bold;
+  color: #f1edee !important;
+  font-size: 1.2rem;
+}
+
+.nav-link:hover {
+  color: #ecde1c !important;
+}
+
+.navbar-toggler-icon {
+  background-color: #ecde1c;
+}
+
+.navbar-toggler {
+  --bs-navbar-toggler-border-color: none;
+}
+
+.navbar-nav {
+  text-align: center;
+}
