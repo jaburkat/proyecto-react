@@ -11,13 +11,27 @@ export const Checkout = () => {
   const { carrito, precioTotal, vaciarCarrito } = useContext(CartContext);
   const navigate = useNavigate();
 
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const namePattern =
+    /^([A-Za-zÑñÁáÉéÍíÓóÚú]+['\-]{0,1}[A-Za-zÑñÁáÉéÍíÓóÚú]+)(\s+([A-Za-zÑñÁáÉéÍíÓóÚú]+['\-]{0,1}[A-Za-zÑñÁáÉéÍíÓóÚú]+))*$/;
+  const phonePattern =
+    /^(?:(?:00)?549?)?0?(?:11|[2368]\d)(?:(?=\d{0,2}15)\d{2})??\d{8}$/;
+
   const [email, setEmail] = useState("");
+  const [emailValid, setEmailValid] = useState(false);
   const [nombre, setNombre] = useState("");
+  const [nombreValid, setNombreValid] = useState(false);
   const [apellido, setApellido] = useState("");
+  const [apellidoValid, setApellidoValid] = useState(false);
   const [telefono, setTelefono] = useState("");
+  const [telefonoValid, setTelefonoValid] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!isFormValid()) {
+      return;
+    }
 
     const orden = {
       buyer: {
@@ -65,6 +79,10 @@ export const Checkout = () => {
     });
   };
 
+  const isFormValid = () => {
+    return emailValid && nombreValid && apellidoValid && telefonoValid;
+  };
+
   useEffect(() => {
     if (carrito.length === 0) {
       navigate("/");
@@ -75,15 +93,23 @@ export const Checkout = () => {
     <div>
       <h3 className="mt-3 fs-2 fw-bold">Finalizar compra</h3>
       <hr />
-
+      <h4 className="mt-3">
+      Por favor, para poder finalizar la compra, ingrese todos los datos del formulario.
+      </h4>
       <form onSubmit={handleSubmit} className="container mt-3">
         <div className="form">
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="text"
-              className="form-control"
-              onChange={(e) => setEmail(e.target.value)}
+              className={`form-control ${
+                emailValid ? "is-valid" : "is-invalid"
+              }`}
+              onChange={(e) => {
+                const value = e.target.value;
+                setEmail(value);
+                setEmailValid(emailPattern.test(value));
+              }}
               value={email}
               required
             />
@@ -92,8 +118,14 @@ export const Checkout = () => {
             <label htmlFor="nombre">Nombre</label>
             <input
               type="text"
-              className="form-control"
-              onChange={(e) => setNombre(e.target.value)}
+              className={`form-control ${
+                nombreValid ? "is-valid" : "is-invalid"
+              }`}
+              onChange={(e) => {
+                const value = e.target.value;
+                setNombre(value);
+                setNombreValid(namePattern.test(value));
+              }}
               value={nombre}
               required
             />
@@ -102,30 +134,48 @@ export const Checkout = () => {
             <label htmlFor="apellido">Apellido</label>
             <input
               type="text"
-              className="form-control"
-              onChange={(e) => setApellido(e.target.value)}
+              className={`form-control ${
+                apellidoValid ? "is-valid" : "is-invalid"
+              }`}
+              onChange={(e) => {
+                const value = e.target.value;
+                setApellido(value);
+                setApellidoValid(namePattern.test(value));
+              }}
               value={apellido}
               required
             />
           </div>
           <div className="form-group">
-            <label htmlFor="telefono">Teléfono</label>
+            <label htmlFor="telefono">Teléfono </label>
             <input
               type="text"
-              className="form-control"
-              onChange={(e) => setTelefono(e.target.value)}
+              className={`form-control ${
+                telefonoValid ? "is-valid" : "is-invalid"
+              }`}
+              onChange={(e) => {
+                const value = e.target.value;
+                setTelefono(value);
+                setTelefonoValid(phonePattern.test(value));
+              }}
               value={telefono}
+              placeholder="Código de área + número 🇦🇷"
               required
             />
           </div>
         </div>
         <br />
-        <button type="submit" className="btn btn btn-success submit-button">
-          Finalizar
-        </button>
+
         <Link to="/cart" className="btn btn-primary submit-button">
           Volver al carrito
         </Link>
+        <button
+          type="submit"
+          className="btn btn btn-success submit-button"
+          disabled={!isFormValid()}
+        >
+          Finalizar
+        </button>
       </form>
     </div>
   );
